@@ -407,8 +407,8 @@
     libraryEl.setAttribute("aria-labelledby", `tab-${state.tab}`);
     const active = TABS.find((tab) => tab.id === state.tab);
     document.title = state.q
-      ? `${state.q} · ${active.label} · Byrd Baseball`
-      : `${active.label} · Byrd Baseball`;
+      ? `${state.q} · ${active.label} · William Byrd Baseball`
+      : `${active.label} · William Byrd Baseball`;
   }
 
   function makePill(label, count, pressed, focusKey, attrs, disabled) {
