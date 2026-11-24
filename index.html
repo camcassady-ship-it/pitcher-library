@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#202020">
+  <title>Byrd Baseball · Pitcher Library</title>
+  <meta name="description" content="William Byrd Baseball pitcher library. Video, stills, and pitch-grip references.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23202020'/%3E%3Crect x='7' y='7' width='18' height='18' rx='2' fill='%23ed702d'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#library">Skip to clips</a>
+
+  <div class="sticky-stack">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"></span>
+          <h1>
+            <span class="brand-main">BYRD BASEBALL</span>
+            <span class="brand-sep">·</span>
+            <span class="brand-rest">Pitcher Library</span>
+          </h1>
+        </div>
+        <div class="top-meta">
+          <p class="counts" id="live-counts" data-testid="live-counts">Loading catalog…</p>
+          <label class="switch">
+            <input type="checkbox" id="autoplay" data-testid="autoplay">
+            <span class="switch-ui" aria-hidden="true"></span>
+            <span class="switch-copy">
+              <span class="switch-label">Auto-play in view</span>
+              <span class="switch-state" id="autoplay-state">On</span>
+            </span>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <nav class="tabs-bar" aria-label="Library sections">
+      <div class="tabs" id="tabs" role="tablist"></div>
+    </nav>
+
+    <div class="toolbar">
+      <div class="toolbar-inner">
+        <div class="search-wrap">
+          <label class="sr-only" for="q">Search clips</label>
+          <input id="q" data-testid="search" type="search" placeholder="Search pitcher, title, folder, grip, pitch, angle, focus" autocomplete="off" spellcheck="false" enterkeyhint="search">
+        </div>
+        <button type="button" class="tool-btn" id="filter-toggle" aria-expanded="false" aria-controls="filters">Filters</button>
+        <button type="button" class="tool-btn tool-clear" id="clear" data-testid="clear" hidden>Clear filters</button>
+      </div>
+    </div>
+
+    <div id="filters" class="filters" data-testid="filters" hidden>
+      <div class="filters-inner">
+        <div class="filter-row" id="angle-row"></div>
+        <div class="filter-row" id="pitch-row"></div>
+        <div class="filter-row" id="focus-row"></div>
+        <div class="filter-row">
+          <span class="filter-label">Limit</span>
+          <button type="button" class="pill" id="audio-toggle" data-facet="audio" data-focus-key="audio" aria-pressed="false">With audio</button>
+          <button type="button" class="pill" id="stills-toggle" data-facet="stills" data-focus-key="stills" aria-pressed="false">Stills only</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="letter-wrap" class="letter-wrap">
+      <div class="letters" id="letters" data-testid="letter-bar" role="toolbar" aria-label="Jump to pitcher letter"></div>
+    </div>
+  </div>
+
+  <div class="context" id="context">
+    <div id="pitcher-wrap">
+      <div class="pitcher-row">
+        <div class="pitcher-field">
+          <label class="sr-only" for="pitcher-q">Filter pitchers</label>
+          <input id="pitcher-q" data-testid="pitcher-filter" type="search" placeholder="Filter pitchers" autocomplete="off" spellcheck="false">
+        </div>
+        <div id="selected-pitcher" class="selected" data-testid="selected-pitcher" hidden></div>
+        <button type="button" class="pill related-pill" id="related" data-testid="related" hidden aria-pressed="false">Include grips &amp; overlays</button>
+      </div>
+      <div id="pitcher-chips" class="hchips" data-testid="pitcher-chips" hidden></div>
+    </div>
+    <div id="grip-wrap" class="subpills" hidden>
+      <div id="grips" class="hwrap" data-testid="grip-pills"></div>
+    </div>
+    <div id="folder-wrap" class="subpills" hidden>
+      <div id="folders" class="hwrap" data-testid="folder-pills"></div>
+    </div>
+  </div>
+
+  <main id="library" class="library" aria-busy="true" role="tabpanel">
+    <p id="summary" class="summary" data-testid="summary" aria-live="polite"></p>
+    <div id="grid" class="grid" data-testid="grid"></div>
+    <div id="sentinel" class="sentinel" aria-hidden="true"></div>
+    <div class="more-row">
+      <button type="button" id="load-more" class="load-more" data-testid="load-more" hidden>Load more</button>
+    </div>
+    <p id="empty" class="empty" data-testid="empty" hidden>No clips match these filters.</p>
+    <p id="fatal" class="empty" hidden>The catalog could not be loaded.</p>
+    <noscript><p class="empty">This library needs JavaScript to load the catalog.</p></noscript>
+  </main>
+
+  <footer class="site-foot">
+    <div id="foot"></div>
+  </footer>
+
+  <div id="lightbox" class="lightbox" data-testid="lightbox" hidden>
+    <div class="lb-backdrop" data-close="1"></div>
+    <div class="lb-dialog" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+      <div class="lb-top">
+        <p class="lb-kicker" id="lb-kicker"></p>
+        <button type="button" class="lb-icon" id="lb-close" data-testid="lb-close" data-close="1" aria-label="Close">×</button>
+      </div>
+      <div class="lb-stage">
+        <button type="button" class="lb-nav" id="lb-prev" data-testid="lb-prev" aria-label="Previous clip">‹</button>
+        <div id="lb-media" class="lb-media"></div>
+        <button type="button" class="lb-nav" id="lb-next" data-testid="lb-next" aria-label="Next clip">›</button>
+      </div>
+      <div class="lb-bottom">
+        <div class="lb-controls">
+          <button type="button" id="lb-play" data-testid="lb-play">Play</button>
+          <div class="seg" id="lb-speed" role="group" aria-label="Playback speed">
+            <button type="button" data-rate="1" data-testid="rate-1" aria-pressed="true">1×</button>
+            <button type="button" data-rate="0.5" data-testid="rate-05" aria-pressed="false">0.5×</button>
+            <button type="button" data-rate="0.25" data-testid="rate-025" aria-pressed="false">0.25×</button>
+          </div>
+          <button type="button" id="lb-loop" data-testid="lb-loop" aria-pressed="true">Loop</button>
+          <button type="button" id="lb-back" data-testid="lb-back" title="Back one frame (1/30s)">−1f</button>
+          <button type="button" id="lb-fwd" data-testid="lb-fwd" title="Forward one frame (1/30s)">+1f</button>
+          <span id="lb-time" class="lb-time" data-testid="lb-time"></span>
+          <button type="button" id="lb-mute" class="mute-btn" data-testid="lb-mute" hidden>Unmute</button>
+          <button type="button" id="lb-copy" data-testid="lb-copy">Copy clip link</button>
+          <a id="lb-open" data-testid="lb-open" target="_blank" rel="noopener noreferrer">Open direct file</a>
+        </div>
+        <h2 id="lb-title"></h2>
+        <p class="lb-position" id="lb-pos"></p>
+        <dl id="lb-meta" class="lb-meta"></dl>
+        <p class="lb-note" id="lb-note" hidden></p>
+        <p class="lb-keys">Esc close · ← → clips · Space play/pause · , . frame</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
